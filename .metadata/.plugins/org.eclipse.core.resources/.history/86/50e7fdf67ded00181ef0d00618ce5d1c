@@ -1,0 +1,85 @@
+package ass;
+
+import java.awt.*;
+import java.util.*;
+import javax.swing.*;
+
+public class MatchingGame_reset 
+{
+	Image[] imgResize;
+	Image[] imgChange;
+	ImageIcon[] image;
+	int [] arr;
+	
+	public MatchingGame_reset() 
+	{
+		imgResize = new Image[9];
+		imgChange = new Image[9];
+		image = new ImageIcon[9];	// 9장 필요 - 짝 8장, 뒷면 1장
+		arr = new int[16];	// 4 x 4
+		
+		AddImage();
+		RandNumber();
+	}
+	
+	public void AddImage()
+	{
+		String path = "src/Images/";	// 상대경로, 혹시 발표컴퓨터에서 경로실행이 안되면 절대경로로 이부분만 바꿔주면 전부 변경됨
+		
+		image[0] = new ImageIcon(path + "backImage.jpg");	 // 0번은 뒷면으로 설정
+		image[1] = new ImageIcon(path + "Marik.jpg");
+		image[2] = new ImageIcon(path + "tomcat.png");
+		image[3] = new ImageIcon(path + "mushroom.jpg");
+		image[4] = new ImageIcon(path + "kupa.jpg");
+		image[5] = new ImageIcon(path + "crazyDog.png");
+		image[6] = new ImageIcon(path + "sonic.jpg");
+		image[7] = new ImageIcon(path + "cuvee.jpg");
+		image[8] = new ImageIcon(path + "pikachu.jpg");
+		
+		for(int i = 0; i < 9; i++)	// 이미지를 버튼 크기에 맞춤
+		{
+			imgResize[i] = image[i].getImage();
+			imgChange[i] = imgResize[i].getScaledInstance(155, 115, Image.SCALE_SMOOTH);
+			image[i] = new ImageIcon(imgChange[i]);
+		}
+	}
+	
+	public void RandNumber()	// 제작중 - 랜덤하게 섞고 섞고 돌리고
+	{
+		int check = 0;
+		Random rand = new Random();
+		
+		for(int index = 0; index < arr.length; index++)	// 16개 카드에 순서대로 카드번호 부여
+		{
+			arr[index] = rand.nextInt(8) + 1;	// 배열에 1~8의 랜덤한 이미지번호가 들어감, 뒷면인 0번은 제외
+			
+			for(int same = 0; same < index; same++)
+			{
+				if(arr[index] == arr[same])
+					check++;
+			}
+			
+			if(check == 2)
+			{
+				check = 0;
+				index--;
+				continue;
+			}
+			
+			check = 0;
+		}
+	}
+	
+	public int GetArr(int i) // 셔플한 이미지번호를 메인에서 사용 - 카드버튼 클래스로 넣어줌
+	{						// 카드버튼에 넣어줄 때 GetImage(GetArr(i))로 사용
+		return arr[i];		// 눌렀을 때 같은 이미지인지 판별하는 이벤트를 위하여 배열에 저장된 번호도 함께 넘겨준다
+	}
+	
+	public ImageIcon GetImage(int i) // 카드의 이미지를 메인에서 사용 - 카드버튼 클래스로 넣어줌
+	{								// arr의 배열에 저장된 번호에 따라 그림을 넣어준다
+		return image[i];			// 예) i(0)번째의 카드에 arr[0]에 저장된 5의 이미지번호대로 image[5]를 넣어준다
+	}
+	
+	
+	
+}
